@@ -1,0 +1,26 @@
+# Configuración y credenciales locales
+config.json
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+# Base de datos, historial y registros
+datos/
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.log
+# Entornos, cachés y compilación
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+firmware_test
+firmware_test.exe
+node_modules/
+.DS_Store
+Thumbs.db
