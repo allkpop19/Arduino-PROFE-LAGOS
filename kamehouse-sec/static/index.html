@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>Kamehouse Sec · Acceso conectado</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23155be8'/%3E%3Cpath d='M14 31L32 16l18 15v20H37V36H27v15H14z' fill='%23ffd33b'/%3E%3C/svg%3E">
+  <script src="/static/theme.js"></script>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <a class="brand" href="/" aria-label="Kamehouse Sec, inicio"><span class="brand-icon">⌂</span> Kamehouse <span class="brand-dot">Sec</span></a>
+      <span class="header-label">ACCESO RESIDENCIAL</span>
+      <div class="connection"><span class="dot" id="connection-dot"></span><span id="connection-text">Conectando…</span></div>
+      <button id="settings-open" class="settings-button" type="button">⚙ Configuración</button>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false">◐ Modo oscuro</button>
+    </header>
+    <main>
+      <section class="intro">
+        <div><p class="eyebrow"><span></span> TU ESPACIO, CONECTADO</p><h1 id="welcome-title">Bienvenido a casa.</h1><p class="subtitle">Un acceso sencillo. Una puerta bajo tu control.</p></div>
+        <span class="local-chip">↔ Conexión local por USB</span>
+      </section>
+      <div class="demo-banner" id="demo-banner" hidden>
+        <div><strong>Modo de demostración</strong><span>Prueba el recorrido sin conectar un Arduino.</span></div>
+        <button class="secondary" id="demo-toggle" type="button">Acercar persona al sensor</button>
+      </div>
+      <section class="connection-panel" aria-label="Diagnóstico de conexión">
+        <div><span class="connection-label">01 · SERVIDOR</span><strong id="diag-server">Conectando…</strong></div>
+        <div><span class="connection-label">02 · PUERTO USB</span><strong id="diag-usb">Sin confirmar</strong></div>
+        <div><span class="connection-label">03 · DATOS DEL ARDUINO</span><strong id="diag-data">Sin confirmar</strong></div>
+        <span id="sound-status" class="sound-indicator">♪ Sonido desactivado</span>
+      </section>
+      <section class="dashboard">
+        <article class="scene-card">
+          <div class="scene-top"><div><span class="eyebrow">VISTA DE LA CASA</span><h2 id="house-name">Mi casa</h2></div><span class="tag" id="door-tag">Sin conexión</span></div>
+          <svg class="house" viewBox="0 0 700 420" role="img" aria-label="Ilustración de la entrada de una casa con puerta animada">
+            <defs>
+              <linearGradient id="sky" x2="0" y2="1"><stop stop-color="var(--scene)"/><stop offset="1" stop-color="var(--scene)"/></linearGradient>
+              <linearGradient id="wall" x2="1" y2="1"><stop stop-color="var(--wall-top)"/><stop offset="1" stop-color="var(--wall-bottom)"/></linearGradient>
+              <linearGradient id="roof" x2="0" y2="1"><stop stop-color="var(--roof-top)"/><stop offset="1" stop-color="var(--roof-bottom)"/></linearGradient>
+              <linearGradient id="glass" x2="1" y2="1"><stop stop-color="var(--glass-top)"/><stop offset="1" stop-color="var(--glass-bottom)"/></linearGradient>
+            </defs>
+            <circle cx="542" cy="100" r="58" fill="var(--yellow)" opacity=".75"/>
+            <path d="M0 313Q160 280 350 316T700 301V420H0Z" fill="var(--ground)"/>
+            <ellipse cx="351" cy="357" rx="239" ry="24" fill="var(--ground-shadow)" opacity=".35"/>
+            <path d="M308 332H384L436 420H248Z" fill="var(--path)"/>
+            <path d="M159 207L352 95L546 207V336H159Z" fill="url(#wall)"/>
+            <path d="M135 207L352 79L568 207L550 222L352 108L152 224Z" fill="url(#roof)"/>
+            <path d="M448 111V79H484V132Z" fill="var(--roof-bottom)"/>
+            <path d="M159 226L352 112L546 226V241L352 126L159 241Z" fill="var(--trim)" opacity=".55"/>
+            <rect x="192" y="235" width="84" height="69" rx="2" fill="var(--trim)"/>
+            <rect x="198" y="241" width="72" height="57" fill="url(#glass)"/>
+            <path d="M234 241V298M198 270H270" stroke="var(--window-frame)" stroke-width="4"/>
+            <path d="M200 244L233 244L200 277Z" fill="var(--window-frame)" opacity=".25"/>
+            <rect x="424" y="235" width="84" height="69" rx="2" fill="var(--trim)"/>
+            <rect x="430" y="241" width="72" height="57" fill="url(#glass)"/>
+            <path d="M466 241V298M430 270H502" stroke="var(--window-frame)" stroke-width="4"/>
+            <rect x="309" y="223" width="84" height="117" rx="3" fill="var(--trim)"/>
+            <rect x="315" y="229" width="72" height="107" fill="var(--opening)"/>
+            <g id="door-leaf"><rect x="315" y="229" width="72" height="107" rx="1" fill="var(--door)"/><path d="M330 242H372V276H330ZM330 286H372V324H330Z" fill="none" stroke="var(--door-lines)" stroke-width="2"/><circle cx="374" cy="283" r="3" fill="var(--roof-bottom)"/></g>
+            <path d="M304 340H398V347H304Z" fill="var(--step)"/>
+            <rect x="400" y="258" width="10" height="17" rx="3" fill="var(--roof-bottom)"/><circle id="sensor-led" cx="405" cy="263" r="2" fill="var(--trim)"/>
+            <path class="sensor-wave" d="M414 254Q429 266 414 278M420 247Q443 266 420 285" fill="none" stroke="var(--blue)" stroke-width="3" stroke-linecap="round"/>
+            <g fill="var(--foliage)"><ellipse cx="137" cy="321" rx="30" ry="23"/><ellipse cx="167" cy="325" rx="28" ry="19"/><ellipse cx="530" cy="324" rx="31" ry="20"/><ellipse cx="561" cy="322" rx="25" ry="24"/></g>
+            <g stroke="var(--trunk)" stroke-width="7"><path d="M91 340V243M607 340V249"/></g>
+            <g fill="var(--foliage-light)"><ellipse cx="90" cy="237" rx="36" ry="54"/><ellipse cx="608" cy="239" rx="35" ry="52"/></g>
+            <g fill="var(--foliage-mid)"><ellipse cx="78" cy="254" rx="25" ry="32"/><ellipse cx="596" cy="252" rx="25" ry="31"/></g>
+            <path d="M55 350H646" stroke="var(--trim)" stroke-width="2"/>
+          </svg>
+          <div class="scene-bottom"><span><span class="live-dot"></span> ESTADO EN VIVO</span><span id="scene-caption">Esperando conexión con la casa</span></div>
+        </article>
+        <article class="access-card">
+          <span class="eyebrow">CONTROL DE ACCESO</span>
+          <div class="lock-icon" id="status-icon">⌁</div>
+          <h2 id="status-title">Conectando con tu casa</h2>
+          <p id="status-description">Conecta el Arduino y mantén esta página abierta.</p>
+          <div class="countdown" id="countdown" hidden><strong id="seconds">5</strong><span>segundos para cerrar</span><progress id="countdown-progress" max="5000" value="5000"></progress></div>
+          <button class="primary" id="show-panel" type="button" hidden>Ingresar contraseña <span>↗</span></button>
+          <div class="access-note"><span>◇</span><p>La detección activa el panel.<br>Tu contraseña autoriza la apertura.</p></div>
+        </article>
+      </section>
+      <section class="metrics" aria-label="Estado del sistema">
+        <article><span class="metric-symbol">◎</span><div><span class="metric-label">Sensor de presencia</span><strong id="sensor-status">Sin datos</strong></div><span class="metric-detail" id="distance">— cm</span></article>
+        <article><span class="metric-symbol">▥</span><div><span class="metric-label">Puerta de la casa</span><strong id="door-status">Sin datos</strong></div><span class="metric-detail">0° / 90°</span></article>
+        <article><span class="metric-symbol">◷</span><div><span class="metric-label">Cierre automático</span><strong>5 segundos</strong></div><span class="metric-detail">Tras abrir</span></article>
+      </section>
+      <section class="statistics" aria-label="Estadísticas de acceso">
+        <article><span class="stat-label">APERTURAS DE HOY</span><strong id="stat-openings">—</strong><span>Accesos autorizados</span></article>
+        <article><span class="stat-label">INTENTOS RECHAZADOS HOY</span><strong id="stat-denied">—</strong><span>Contraseñas incorrectas</span></article>
+        <article class="last-entry"><span class="stat-label">ÚLTIMA ENTRADA</span><strong id="stat-last-time">Sin entradas</strong><span id="stat-last-date">Aún no se registran aperturas</span></article>
+      </section>
+      <section class="activity history-panel">
+        <div class="activity-heading"><div><p class="eyebrow">REGISTRO DE ACCESO</p><h2>Historial de la casa</h2></div><span id="history-mode">Guardado en este PC</span></div>
+        <form id="history-filters" class="history-filters">
+          <div><label for="history-kind">Tipo de evento</label><select id="history-kind"><option value="all">Todos los eventos</option><option value="opened">Aperturas</option><option value="denied">Intentos rechazados</option><option value="closed">Cierres</option><option value="detected">Detecciones</option><option value="connection">Conexión</option><option value="info">Sistema y configuración</option></select></div>
+          <div><label for="history-date">Fecha</label><input type="date" id="history-date"></div>
+          <button class="secondary" type="submit">Aplicar filtros</button><button class="text-button" id="history-reset" type="button">Limpiar</button>
+        </form>
+        <p id="storage-warning" class="inline-warning" role="status" hidden></p>
+        <div class="history-scroll"><table class="history-table"><thead><tr><th>Fecha y hora</th><th>Evento</th><th>Detalle</th></tr></thead><tbody id="history-body"><tr><td colspan="3" class="history-empty">Cargando historial…</td></tr></tbody></table></div>
+        <div class="history-pagination"><span id="history-count">—</span><div><button id="history-prev" class="secondary" type="button" disabled>← Anterior</button><button id="history-next" class="secondary" type="button" disabled>Siguiente →</button></div></div>
+        <p class="history-footnote">Hora de Chile · Los registros se conservan al cerrar la página o reiniciar el servidor.</p>
+      </section>
+    </main>
+    <footer><span>Kamehouse Sec <span class="footer-sub">Una llegada más simple.</span></span><span>Detección ≤ 10 cm <span class="separator">/</span> Acceso con contraseña</span></footer>
+  </div>
+  <dialog id="password-dialog" aria-labelledby="dialog-title">
+    <button class="close" id="close-panel" aria-label="Cerrar panel" type="button">×</button>
+    <span class="modal-icon">⌂</span><p class="eyebrow">PERSONA DETECTADA</p><h2 id="dialog-title">Estás a un paso de entrar.</h2><p class="dialog-description">Ingresa la contraseña para abrir la puerta de la casa.</p>
+    <form id="password-form">
+      <label for="password">Contraseña de acceso</label>
+      <div class="password-field"><input id="password" name="password" type="password" autocomplete="current-password" maxlength="128" required><button id="toggle-password" type="button" aria-label="Mostrar contraseña">Ver</button></div>
+      <p id="form-message" class="form-message" aria-live="polite"></p>
+      <button class="primary" id="unlock-button" type="submit">Abrir puerta <span>→</span></button>
+    </form>
+    <p class="modal-footnote">Se cerrará automáticamente después de 5 segundos.</p>
+  </dialog>
+  <dialog id="settings-dialog" aria-labelledby="settings-title">
+    <button class="close" id="settings-close" aria-label="Cerrar configuración" type="button">×</button>
+    <span class="modal-icon">⚙</span><p class="eyebrow">PERSONALIZA TU ESPACIO</p><h2 id="settings-title">Configuración</h2>
+    <div id="settings-gate"><p class="dialog-description">Ingresa la contraseña actual de la casa para cambiar la configuración.</p>
+      <form id="admin-login-form"><label for="admin-password">Contraseña actual</label><input class="text-input" id="admin-password" type="password" autocomplete="current-password" maxlength="128" required><p class="form-message" id="admin-message" aria-live="polite"></p><button class="primary" type="submit">Abrir configuración <span>→</span></button></form>
+    </div>
+    <div id="settings-content" hidden>
+      <p class="dialog-description">Los cambios se guardan en este PC.</p>
+      <form id="preferences-form" class="settings-section"><h3>Tu casa</h3><label for="setting-name">Nombre de la casa</label><input class="text-input" id="setting-name" maxlength="40" required>
+        <label class="switch-row" for="setting-sound"><span><strong>Sonidos de aviso</strong><small>Apertura, cierre y contraseña incorrecta</small></span><input type="checkbox" id="setting-sound"></label>
+        <button class="text-button sound-test" id="sound-test" type="button">♪ Probar sonido</button><p class="form-message" id="preferences-message" aria-live="polite"></p><button class="primary" type="submit">Guardar preferencias <span>✓</span></button>
+      </form>
+      <form id="change-password-form" class="settings-section"><h3>Cambiar contraseña</h3><p class="settings-help" id="password-help">La contraseña sirve para abrir la puerta y entrar a la configuración.</p>
+        <label for="current-password">Contraseña actual</label><input class="text-input" id="current-password" type="password" autocomplete="current-password" maxlength="128" required>
+        <label for="new-password">Nueva contraseña</label><input class="text-input" id="new-password" type="password" autocomplete="new-password" minlength="4" maxlength="128" required>
+        <label for="confirm-password">Repetir nueva contraseña</label><input class="text-input" id="confirm-password" type="password" autocomplete="new-password" minlength="4" maxlength="128" required>
+        <p class="form-message" id="password-message" aria-live="polite"></p><button class="primary" type="submit">Cambiar contraseña <span>→</span></button>
+      </form>
+      <button class="secondary settings-logout" id="admin-logout" type="button">Cerrar sesión de configuración</button>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" popover="manual" role="status" hidden><span id="toast-icon">✓</span><span id="toast-message"></span></div>
+</body>
+</html>
